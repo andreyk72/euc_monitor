@@ -20,6 +20,18 @@ Gets the real time data, such as speed, battery voltage etc from the wheel via b
 - The battery percentage calculation formula is different from the one in KingSong app, and shows less percentage.
 - Currently the percentage formula suports only 68 volt battery. Can be changed in near future.
 
+
+# User Manual
+
+* Single click on left or right button - change screens 
+* Double click on left buton - change the wheel light mode between
+  - Lights Off Leds Off
+  - Lights On (Auto) Leds Off
+  - Lights On (Auto) Leds On
+* Double click on Right button - change the display backlight 
+* Long press right button - activate deepsleep mode
+* Exit from deepsleep - Reset button.
+
 # Installation
 
 First you need to compile and install Micropython with s3lcd display driver on your board. Please see the instructions on its github page [s3lcd driver](https://github.com/russhughes/s3lcd).
