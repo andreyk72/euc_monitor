@@ -32,7 +32,7 @@ The s3lcd project installation instructions contain two problems.
 - First micropython/ports directory must contain a symlink to where the s3lcd library was cloned.
 - Second the build command for compilation with SPIRAM is wrong and must be the following:
 
-    make \
+     make \
 	    BOARD=ESP32_GENERIC_S3 \
 	    BOARD_VARIANT=SPIRAM_OCT \
 	    USER_C_MODULES=../../../../s3lcd/src/micropython.cmake \
