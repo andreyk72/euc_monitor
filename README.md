@@ -1,16 +1,16 @@
 # euc_monitor
 
 Electric Unicycle real time status monitor, implemented for ESP32-S3 based board LilyGo T-Display S3 on Micropython.
-Gets the real time data, such as speed, battery voltage etc from the wheel via bluetooth and show on the display. Currently supports only KingSong wheels. 
+Gets the real time data, such as speed, battery voltage etc from the wheel via bluetooth and shows on the display. Currently supports KingSong wheels only. 
 
 # Features
 
 - Shows current speed, PWM, battery percentage, controller temperature current trip disance and many more
-- Several display screens with horizontal and vertical orientations, easy switch between them with buttons.
-- Can be mounted on the top of the EUC body. Special screen with sliding values - Speed 10 seconds, then battery percentage 5 seconds then Current trip distance 5 seconds, all shown with huge font for better visibility.
+- Several display screens with horizontal and vertical orientations, easy switch between them with the buttons.
+- Can be mounted on the top of the EUC body. Special screen with sliding values - Speed 10 seconds, then Battery Percentage 5 seconds then Current Trip Distance 5 seconds, all shown with huge size font for better visibility.
 - Calculates peak power and tracks maximum values. Special screen showing the maximums.
-- Tracks maximums of PWM, Temperature and minimum battery voltage. Shows alarm on the screen and activates buzzer beeps. Special screen with list of last alarms. Note buzzer is not a part of the LilyGo board and must be connected externally to GPIO21.
-- The STLs for the device body  is included.
+- Tracks maximums of PWM, Temperature and Minimum Battery Voltage. Shows alarm on the screen and activates buzzer beeps. Special screen with list of last alarms. Note buzzer is not a part of the LilyGo board and must be connected externally to GPIO21.
+- The STLs for the device body are included.
 
 # Restrictions/Problems
 
@@ -23,20 +23,20 @@ Gets the real time data, such as speed, battery voltage etc from the wheel via b
 
 # User Manual
 
-* Single click on left or right button - change screens 
-* Double click on left buton - change the wheel light mode between
-  - Lights Off Leds Off
-  - Lights On (Auto) Leds Off
-  - Lights On (Auto) Leds On
-* Double click on Right button - change the display backlight 
-* Long press right button - activate deepsleep mode
+* Single click on the left or right button - change screens 
+* Double click on the left buton - change the wheel light mode between
+  - Lights Off - Leds Off
+  - Lights On (Auto) - Leds Off
+  - Lights On (Auto) - Leds On
+* Double click on the right button - change the display backlight 
+* Long press on the right button - activate deepsleep mode
 * Exit from deepsleep - Reset button.
 
 # Installation
 
 First you need to compile and install Micropython with s3lcd display driver on your board. Please see the instructions on its github page [s3lcd driver](https://github.com/russhughes/s3lcd).
 
-For thsi project esp-idf version 5.2 and micropython version 1.23 were used. 
+For this project esp-idf version 5.2 and micropython version 1.23 were used. 
 
 It is important to build micropython with SPIRAM (aka PSRAM) support. There's 8mb of PSRAM installed on the board and must be visible by micropython. The internal ESP32 RAM memory is not enough for running the app. To check if the SPIRAM is available the function in heap_mon.py can be used.
 
