@@ -9,14 +9,10 @@ Gets the real time data, such as speed, battery voltage etc from the wheel via b
 - Several display screens with horizontal and vertical orientations, easy switch between them with the buttons.
 - Can be mounted on the top of the EUC body. Special screen with sliding values - Speed 10 seconds, then Battery Percentage 5 seconds then Current Trip Distance 5 seconds, all shown with huge size font for better visibility.
 - Calculates peak power and tracks maximum values. Special screen showing the maximums.
-<<<<<<< HEAD
 - Tracks maximums of PWM, Temperature and Minimum Battery Voltage. Shows alarm on the screen and activates buzzer beeps. Special screen with list of last alarms. Note buzzer is not a part of the LilyGo board and must be connected externally to GPIO21.
-- The STLs for the device body are included.
-=======
-- Tracks maximums of PWM, Temperature and minimum battery voltage. Shows alarm on the screen and activates buzzer beeps. Special screen with list of last alarms. Note buzzer is not a part of the LilyGo board and must be connected externally to GPIO21.
 - Monitor battery health, measure max voltage drop and the battey internal resistance (in Omhs)
 - The STLs for the device body  is included.
->>>>>>> dea362d (More reliable connection, support more wheels)
+
 
 # Restrictions/Problems
 
