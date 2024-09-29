@@ -15,7 +15,7 @@ import board
 tft = tft_config.config(tft_config.TALL)
 tft_initialized = False
 
-from wheeldata import g_wheeldata
+from wheeldata import g_wheeldata as wd
 
 DISPLAY_REFRESH_MS = 50
 
@@ -129,25 +129,25 @@ class MainScreen(Screen):
         tft.fill(s3lcd.BLACK)
         #print('write text')
         tft.write(font_24, 'Speed', 5, 5, s3lcd.WHITE)
-        tft.write(font_16, f'Lat:{g_wheeldata.live_pkt.get_age_ms()/1000:4.1f}', 110, 5 , s3lcd.RED)
-        speed_s = '{:4.1f}'.format(g_wheeldata.live_pkt.speed)
+        tft.write(font_16, f'Lat:{wd.speed.get_age_ms()/1000:4.1f}', 110, 5 , s3lcd.RED)
+        speed_s = str(wd.speed)
         tft.write(font_80, speed_s , center_x_pos(font_80, speed_s), 42, \
-                  color_by_latency(g_wheeldata.live_pkt, s3lcd.GREEN))
+                  color_by_latency(wd.speed, s3lcd.GREEN))
 
         tft.write(font_24,  'PWM', 5, 130, s3lcd.WHITE)
-        tft.write(font_16, f'Lat:{g_wheeldata.cpuload_pkt.get_age_ms()/1000:4.1f}', 110, 130 , s3lcd.RED)
-        pwm_s = '{:3d}'.format(g_wheeldata.cpuload_pkt.output)
+        tft.write(font_16, f'Lat:{wd.cpuload.get_age_ms()/1000:4.1f}', 110, 130 , s3lcd.RED)
+        pwm_s = str(wd.output)
         tft.write(font_80, pwm_s, center_x_pos(font_80, pwm_s), 162, \
-                  color_by_latency(g_wheeldata.live_pkt, s3lcd.BLUE))
+                  color_by_latency(wd.output, s3lcd.BLUE))
 
         #battery
         tft.write(font_24, 'Batt', left_x_pos(font_24, 'Batt'), 246, s3lcd.WHITE)
-        batt_s = '{:3d}%'.format(g_wheeldata.live_pkt.batt_percentage)
+        batt_s = str(wd.batt_percentage)
         tft.write(font_24, batt_s, left_x_pos(font_24, batt_s), 274, s3lcd.GREEN)
 
         #temp
         tft.write(font_24, 'Temp', right_x_pos(font_24, 'Temp'), 246, s3lcd.WHITE)
-        temp_s = '{:4.1f}'.format(g_wheeldata.live_pkt.temperature)
+        temp_s = str(wd.temperature)
         tft.write(font_24, temp_s , right_x_pos(font_24, temp_s), 274, s3lcd.BLUE)
 
         render_batt()
@@ -162,25 +162,28 @@ class MaxScreen(Screen):
         tft.rotation(tft_config.TALL)
         tft.fill(s3lcd.BLACK)
         tft.write(font_24, 'MAX', 5, 5, s3lcd.WHITE)
-        tft.write(font_24, f'Speed:', 5, 42, s3lcd.CYAN)
-        tft.write(font_24, f'{g_wheeldata.live_pkt.max_speed:4.1f}' , 90,42 , s3lcd.GREEN)
-        tft.write(font_24, f'PWM: ', 5, 79, s3lcd.CYAN)
-        tft.write(font_24, f'{g_wheeldata.cpuload_pkt.max_output:3d}', 90, 79, s3lcd.BLUE)
-        tft.write(font_24, f'Curr:', 5, 116, s3lcd.CYAN)
-        tft.write(font_24, f'{g_wheeldata.live_pkt.max_current:4.1f}', 90 ,116 , s3lcd.YELLOW)
+        tft.write(font_24, f'Speed:', 5, 40, s3lcd.CYAN)
+        tft.write(font_24, str(wd.max_speed) , 90,40 , s3lcd.GREEN)
+        tft.write(font_24, f'PWM: ', 5, 70, s3lcd.CYAN)
+        tft.write(font_24, str(wd.max_output), 90, 70, s3lcd.BLUE)
+        tft.write(font_24, f'Curr:', 5, 100, s3lcd.CYAN)
+        tft.write(font_24, str(wd.max_current), 90 ,100 , s3lcd.YELLOW)
 
-        tft.write(font_24, f'Temp:', 5, 153, s3lcd.CYAN)
-        tft.write(font_24, f'{g_wheeldata.live_pkt.max_temperature:4.1f}', 90 , 153, s3lcd.GREEN)
-        tft.write(font_24, f'CPU:', 5, 190, s3lcd.CYAN)
-        tft.write(font_24, f'{g_wheeldata.cpuload_pkt.max_cpuload:3d}', 90, 190, s3lcd.BLUE)
+        tft.write(font_24, f'Temp:', 5, 130, s3lcd.CYAN)
+        tft.write(font_24, str(wd.max_temperature), 90 , 130, s3lcd.GREEN)
 
-        tft.write(font_24, 'Trip:', 5, 225, s3lcd.CYAN)
-        tft.write(font_24, f'{g_wheeldata.trip_pkt.trip:5.1f}', 90, 225, s3lcd.MAGENTA)
+        tft.write(font_24, 'Trip:', 5, 160, s3lcd.CYAN)
+        tft.write(font_24, str(wd.trip), 90, 160, s3lcd.MAGENTA)
 
-        tft.write(font_24, 'Power', 5, 225, s3lcd.CYAN)
-        pow = int(g_wheeldata.live_pkt.max_power)
-        tft.write(font_24, f'{pow:4d}', 90, 225, s3lcd.MAGENTA)
+        tft.write(font_24, 'Power', 5, 190, s3lcd.CYAN)
+        pow = str(wd.max_power)
+        tft.write(font_24, pow, 90, 190, s3lcd.BLUE)
 
+        tft.write(font_24, 'VDrop', 5, 220, s3lcd.CYAN)
+        tft.write(font_24, str(wd.max_voltage_drop), 90, 220, s3lcd.GREEN)
+
+        tft.write(font_24, 'BRes', 5, 250, s3lcd.CYAN)
+        tft.write(font_24, str(wd.batt_resistance), 90, 250, s3lcd.GREEN)
 
         render_batt()
         render_alarm()
@@ -213,10 +216,10 @@ class PowerScreen(Screen):
         tft.rotation(tft_config.WIDE)
         tft.fill(s3lcd.BLACK)
         tft.write(font_24, 'Power', 2 , 2, s3lcd.WHITE)
-        pow = int(g_wheeldata.live_pkt.power)
-        center_text(font_120, f'{pow:4d}', color_by_latency(g_wheeldata.live_pkt, s3lcd.GREEN))
+        pow = str(wd.power)
+        center_text(font_120, pow, color_by_latency(wd.power, s3lcd.GREEN))
 
-        iv_str = f'I:{g_wheeldata.live_pkt.current:4.1f} V:{g_wheeldata.live_pkt.voltage:4.1f}'
+        iv_str = f'I:{str(wd.current)} V:{str(wd.voltage)}'
         s_size = tft.write_len(font_24, iv_str)
 
         tft.write(font_24, iv_str, tft.width() - s_size - 2, tft.height() - 24 - 2, s3lcd.RED)
@@ -224,6 +227,26 @@ class PowerScreen(Screen):
         render_batt()
         render_alarm()
         tft.show()
+
+class BattHealthScreen(Screen):
+    def __init__(self):
+        self.name = 'Batt'
+
+    def render(self):
+        tft.rotation(tft_config.WIDE)
+        tft.fill(s3lcd.BLACK)
+        tft.write(font_24, 'Batt Health', 2 , 2, s3lcd.WHITE)
+        center_text(font_80, str(wd.batt_resistance), color_by_latency(wd.batt_resistance, s3lcd.GREEN))
+
+        iv_str = f'VDrop:{str(wd.voltage_drop)} I:{str(wd.current)}'
+        s_size = tft.write_len(font_24, iv_str)
+
+        tft.write(font_24, iv_str, tft.width() - s_size - 2, tft.height() - 24 - 2, s3lcd.RED)
+
+        render_batt()
+        render_alarm()
+        tft.show()
+
 
 class PWMScreen(Screen):
     def __init__(self):
@@ -233,10 +256,9 @@ class PWMScreen(Screen):
         tft.rotation(tft_config.WIDE)
         tft.fill(s3lcd.BLACK)
         tft.write(font_24, 'PWM', 2 , 2, s3lcd.WHITE)
-        pwm = int(g_wheeldata.cpuload_pkt.output)
-        center_text(font_120, f'{pwm:3d}', color_by_latency(g_wheeldata.cpuload_pkt, s3lcd.GREEN))
+        center_text(font_120, str(wd.output), color_by_latency(wd.output, s3lcd.GREEN))
 
-        iv_str = f'I:{g_wheeldata.live_pkt.current:4.1f} V:{g_wheeldata.live_pkt.voltage:4.1f}'
+        iv_str = f'I:{str(wd.current)} V:{str(wd.voltage)}'
         s_size = tft.write_len(font_24, iv_str)
 
         tft.write(font_24, iv_str, tft.width() - s_size - 2, tft.height() - 24 - 2, s3lcd.RED)
@@ -255,7 +277,7 @@ class SlideScreen(Screen):
 
     def render_speed(self):
         tft.write(font_32, 'Speed', 0 , 2, s3lcd.YELLOW)
-        center_text(font_120, f'{g_wheeldata.live_pkt.speed:4.1f}', color_by_latency(g_wheeldata.cpuload_pkt, s3lcd.GREEN))
+        center_text(font_120, str(wd.speed), color_by_latency(wd.speed, s3lcd.GREEN))
 
         iv_str = f'KM/H'
         s_size = tft.write_len(font_32, iv_str)
@@ -265,9 +287,9 @@ class SlideScreen(Screen):
 
     def render_batt(self):
         tft.write(font_32, 'Batt', 0 , 2, s3lcd.YELLOW)
-        center_text(font_120, f'{g_wheeldata.live_pkt.batt_percentage:3d}%', color_by_latency(g_wheeldata.cpuload_pkt, s3lcd.MAGENTA))
+        center_text(font_120, str(wd.batt_percentage), color_by_latency(wd.batt_percentage, s3lcd.MAGENTA))
 
-        iv_str = f'Voltage:{g_wheeldata.live_pkt.voltage:4.1f}V'
+        iv_str = f'Voltage:{str(wd.voltage)}V'
         s_size = tft.write_len(font_24, iv_str)
 
         tft.write(font_24, iv_str, tft.width() - s_size - 2, tft.height() - 24 - 2, s3lcd.YELLOW)
@@ -275,7 +297,7 @@ class SlideScreen(Screen):
 
     def render_dist(self):
         tft.write(font_32, 'Trip', 0, 2, s3lcd.YELLOW)
-        center_text(font_120, f'{g_wheeldata.trip_pkt.trip:5.1f}', color_by_latency(g_wheeldata.cpuload_pkt, s3lcd.CYAN))
+        center_text(font_120, str(wd.trip), color_by_latency(wd.trip, s3lcd.CYAN))
 
         iv_str = f'KM'
         s_size = tft.write_len(font_32, iv_str)
@@ -312,11 +334,12 @@ class Gui():
     def __init__(self):
         self.screens = {'Connect' : ConnectScreen(), 'Main' : MainScreen(), \
                         'Max' : MaxScreen(), 'Alarms' : AlarmsScreen(), \
-                        'Power' : PowerScreen(), 'PWM' : PWMScreen(), 'Slide': SlideScreen()}
-        self.state = 'Connect'
+                        'Power' : PowerScreen(), 'PWM' : PWMScreen(), 'BattH': BattHealthScreen() , 'Slide': SlideScreen()}
+        self.state = 'Main'
+        self.last_page = 'Main'
         #self.page = 'Main'
         self.page_n = 1
-        self.pages = ['Alarms', 'Main', 'Max', 'Slide' , 'Power', 'PWM'] # the list of pages that can be navigated via left / right button
+        self.pages = ['Alarms', 'Main', 'Max', 'Slide', 'BattH' , 'Power', 'PWM'] # the list of pages that can be navigated via left / right button
 
     def render(self):
         if tft_initialized:
@@ -334,6 +357,17 @@ class Gui():
         else:
             self.page_n = self.page_n - 1
         self.state = self.pages[self.page_n]
+
+    def jump_to_connect(self):
+        if self.state != 'Connect':
+            self.last_page = self.state
+            self.state = 'Connect'
+            print('GUI: Not connected. last_page:', self.last_page)
+
+    def back_from_connect(self):
+        print('GUI: Reconnected. Back from', self.last_page)
+        self.state = self.last_page
+
 
     async def loop_forever(self):
         while tft_initialized:

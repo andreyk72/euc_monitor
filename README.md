@@ -9,16 +9,22 @@ Gets the real time data, such as speed, battery voltage etc from the wheel via b
 - Several display screens with horizontal and vertical orientations, easy switch between them with the buttons.
 - Can be mounted on the top of the EUC body. Special screen with sliding values - Speed 10 seconds, then Battery Percentage 5 seconds then Current Trip Distance 5 seconds, all shown with huge size font for better visibility.
 - Calculates peak power and tracks maximum values. Special screen showing the maximums.
+<<<<<<< HEAD
 - Tracks maximums of PWM, Temperature and Minimum Battery Voltage. Shows alarm on the screen and activates buzzer beeps. Special screen with list of last alarms. Note buzzer is not a part of the LilyGo board and must be connected externally to GPIO21.
 - The STLs for the device body are included.
+=======
+- Tracks maximums of PWM, Temperature and minimum battery voltage. Shows alarm on the screen and activates buzzer beeps. Special screen with list of last alarms. Note buzzer is not a part of the LilyGo board and must be connected externally to GPIO21.
+- Monitor battery health, measure max voltage drop and the battey internal resistance (in Omhs)
+- The STLs for the device body  is included.
+>>>>>>> dea362d (More reliable connection, support more wheels)
 
 # Restrictions/Problems
 
 - Currently only KingSong communicaiton protocol is implemented
-- The bluetooth device name is hardcoded, no device selection screen is implemented
+- The bluetooth device names are hardcoded, no device selection screen is implemented. The connection is done on the first wheel found in the list.
 - No wake up from Deepsleep via control buttos (does not work for some reason on my board) - reset button  is required to be pressed to wake up.
 - The battery percentage calculation formula is different from the one in KingSong app, and shows less percentage.
-- Currently the percentage formula suports only 68 volt battery. Can be changed in near future.
+- Currently only some 16s and 20s models are configured to be detected for finding number of the battery sells. Small code change is required to add more wheel models. 
 
 
 # User Manual
@@ -82,4 +88,27 @@ To start the REPL on board that is already running
 Note the development is configured to use pre-compiled python modules (.mpy) however main.py must be available on the board.
 
 
+# Configuration
 
+## Connection to a wheel
+
+In file ble.py you must configure names of your wheels:
+
+    device_names = ['KSN-16X-120093','KS-16S0130']
+    
+The connection will be done to the first wheel found and waiting for connect.
+
+## Add your wheel models
+
+In order to detect number of cells of the main battery correctly the small modification in code is required. The code currently knows about some 16S and 20S wheels.
+This can be done in file ble.py customizing the following code:
+
+    BATT_16S = ['16S']
+    BATT_20S = ['16X', 'S18', '18L', '18X'] #include only first 3 symbols of the model!
+    
+If you are connecting to a wheel with another number of cells, the small code modification is required in the file ble.py:
+
+    if ss[1][0:3] in BATT_16S:
+        g_wheeldata.cells = 16
+    if ss[1][0:3] in BATT_20S:
+        g_wheeldata.cells = 20

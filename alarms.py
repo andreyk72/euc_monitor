@@ -1,12 +1,25 @@
 #!/usr/bin/env python3
 
 ALARM_PWM = 85
-ALARM_VBAT = 56.0
+ALARM_VBAT_PER_CELL = 3.5 # volts per cell
 ALARM_TEMP = 55.0 # degrees
 
 
-import wheeldata
 from board import buzzer
+from wheeldata import g_wheeldata as wd
+import asyncio
+
+#wd = wheeldata.g_wheeldata
+
+def get_alarm_vbat():
+    return ALARM_VBAT_PER_CELL * wd.cells
+
+async def alarms_loop():
+    while True:
+        if wd.check_alarms:
+            alarms.check_alarms()
+            wd.check_alarms = False
+        await asyncio.sleep_ms(100)
 
 
 class Alarm():
@@ -14,21 +27,18 @@ class Alarm():
         self.alarms = []
         self.alarms_display = []
 
-    def check_alarms(self, wpkt):
-        if isinstance(wpkt, wheeldata.WCPULoadPacket):
-        #pwm
-            if wpkt.output > ALARM_PWM:
-                buzzer.do_beep(5)
-                self.alarms.append(f'PWM: {wpkt.output:3d}')
-            #vbat
-        if isinstance(wpkt, wheeldata.WLivePacket):
-            if wpkt.voltage < ALARM_VBAT:
-                buzzer.do_beep(7)
-                self.alarms.append(f'VBat: {wpkt.voltage:4.1f}')
-            #temperature
-            if wpkt.temperature > ALARM_TEMP:
-                buzzer.do_beep(9)
-                self.alarms.append(f'Temp: {wpkt.temperature:4.1f}')
+    def check_alarms(self):
+        if wd.output.value > ALARM_PWM:
+            buzzer.do_beep(5)
+            self.alarms.append(f'PWM: {str(wd.output)}')
+        #vbat
+        if wd.voltage.value < get_alarm_vbat():
+            buzzer.do_beep(7)
+            self.alarms.append(f'VBat: {str(wd.voltage)}')
+        #temperature
+        if wd.temperature.value > ALARM_TEMP:
+            buzzer.do_beep(9)
+            self.alarms.append(f'Temp: {str(wd.temperature)}')
 
     def push_alarm(self, text):
         self.alarms.append(text)
