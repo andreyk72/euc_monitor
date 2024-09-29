@@ -12,6 +12,7 @@ import asyncio
 from  ble import ble
 from board import read_vbatt_loop
 import tft_buttons
+from alarms import alarms_loop
 
 print('main: import done')
 
@@ -50,15 +51,20 @@ async def main():
     #setup GUI loop
     gui_task = asyncio.create_task(tft_display.gui.loop_forever())
     vbatt_task = asyncio.create_task(read_vbatt_loop())
+    alarms_task = asyncio.create_task(alarms_loop())
     #then go to bluetooth loop
     while initialized:
-        #await ble.connect()
-        await ble.connect_and_process() # main bt reading loop inside here
+        try:
+            await ble.connect_and_process() # main bt reading loop inside here
+        except Exception as e:
+            print("Unhandled bluetooth exception:", e)
+            sys.print_exception(e)
         await asyncio.sleep_ms(1000) # rest for one second and try to re-connect
         gc.collect()
     # stop by some exception
     gui_task.cancel() # stop GUI loop
     vbatt_task.cancel()
+    alarms_task.cancel()
 
 try:
     gc.enable()
